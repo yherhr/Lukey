@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title id="page-title">Product — Luke Davis Mechanical</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="ldm-products.js"></script>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --blue:#2680d8; --blue-bright:#4aabff; --blue-dim:#1a60b0;
+      --chrome:#c8cdd6; --dark:#0d0d0f; --dark2:#111115; --dark3:#18181e;
+      --steel:#22222a; --text:#dde4ef; --muted:#7a8399; --white:#f0f4ff;
+    }
+    html { scroll-behavior:smooth; }
+    body { background:var(--dark); color:var(--text); font-family:'Barlow',sans-serif; font-weight:300; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); opacity:0.025; pointer-events:none; z-index:9999; }
+
+    /* NAV */
+    nav { position:fixed; top:0; left:0; right:0; z-index:1000; display:flex; align-items:center; justify-content:space-between; padding:0 5vw; height:72px; background:rgba(10,10,14,0.96); backdrop-filter:blur(14px); border-bottom:1px solid rgba(38,128,216,0.22); }
+    .nav-logo { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:0.1em; color:var(--white); text-decoration:none; }
+    .nav-logo span { color:var(--blue-bright); }
+    .nav-links { display:flex; gap:2.5rem; list-style:none; }
+    .nav-links a { font-family:'Barlow Condensed',sans-serif; font-size:0.82rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+    .nav-links a:hover { color:var(--blue-bright); }
+    .nav-right { display:flex; align-items:center; gap:1.2rem; }
+    .cart-nav-btn { position:relative; display:flex; align-items:center; gap:0.5rem; font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--text); text-decoration:none; padding:0.5rem 1.2rem; border:1px solid rgba(38,128,216,0.3); transition:border-color 0.2s, color 0.2s; }
+    .cart-nav-btn:hover { border-color:var(--blue-bright); color:var(--blue-bright); }
+    .cart-badge { position:absolute; top:-8px; right:-8px; background:linear-gradient(135deg,var(--blue),var(--blue-bright)); color:#fff; font-size:0.6rem; font-weight:700; width:18px; height:18px; border-radius:50%; display:none; align-items:center; justify-content:center; }
+    .nav-cta { font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; letter-spacing:0.18em; text-transform:uppercase; background:linear-gradient(135deg,var(--blue),var(--blue-bright)); color:#fff; padding:0.55rem 1.4rem; font-weight:700; text-decoration:none; clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%); }
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; }
+    .hamburger span { display:block; width:24px; height:2px; background:var(--text); }
+
+    /* BREADCRUMB */
+    .breadcrumb { padding:100px 5vw 0; display:flex; align-items:center; gap:0.6rem; font-family:'Barlow Condensed',sans-serif; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); }
+    .breadcrumb a { color:var(--muted); text-decoration:none; transition:color 0.2s; }
+    .breadcrumb a:hover { color:var(--blue-bright); }
+    .breadcrumb .sep { opacity:0.4; }
+    .breadcrumb .current { color:var(--blue-bright); }
+
+    /* PRODUCT MAIN */
+    .product-wrap { display:grid; grid-template-columns:1fr 1fr; gap:5rem; padding:3rem 5vw 80px; max-width:1400px; }
+
+    /* IMAGE */
+    .product-gallery { position:sticky; top:90px; height:fit-content; }
+    .product-main-img { width:100%; aspect-ratio:1; object-fit:cover; background:var(--dark3); border:1px solid rgba(38,128,216,0.12); display:block; }
+    .product-img-placeholder { width:100%; aspect-ratio:1; background:var(--dark3); border:1px solid rgba(38,128,216,0.12); display:flex; align-items:center; justify-content:center; font-size:6rem; color:rgba(38,128,216,0.2); }
+    .product-badge { display:inline-block; margin-top:1rem; font-family:'Barlow Condensed',sans-serif; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; font-weight:700; padding:0.3rem 0.8rem; }
+    .sale-badge { background:linear-gradient(135deg,#e63030,#c42020); color:#fff; }
+    .new-badge { background:linear-gradient(135deg,var(--blue),var(--blue-bright)); color:#fff; }
+    .coming-badge { background:rgba(38,128,216,0.15); border:1px solid rgba(38,128,216,0.35); color:var(--blue-bright); }
+    .atomic-source { display:flex; align-items:center; gap:0.6rem; margin-top:1.5rem; padding:0.8rem 1rem; background:rgba(38,128,216,0.06); border:1px solid rgba(38,128,216,0.12); font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); }
+    .atomic-source a { color:var(--blue-bright); text-decoration:none; }
+    .atomic-source a:hover { color:white; }
+
+    /* PRODUCT INFO */
+    .product-info {}
+    .product-cat-tag { font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--blue-bright); display:flex; align-items:center; gap:0.6rem; margin-bottom:0.8rem; }
+    .product-cat-tag::before { content:''; display:block; width:18px; height:1.5px; background:linear-gradient(90deg,var(--blue),var(--blue-bright)); }
+    .product-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(2rem,4vw,3.5rem); line-height:0.95; letter-spacing:0.02em; background:linear-gradient(135deg,#ffffff 0%,var(--chrome) 60%,#aab4cc 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:1.5rem; }
+    .product-price-wrap { display:flex; align-items:baseline; gap:0.6rem; margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid rgba(38,128,216,0.12); }
+    .product-price-from { font-family:'Barlow Condensed',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
+    .product-price-val { font-family:'Bebas Neue',sans-serif; font-size:3rem; background:linear-gradient(135deg,var(--blue),var(--blue-bright)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; }
+    .product-price-aud { font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); }
+
+    .product-desc-full { font-size:1rem; color:var(--muted); line-height:1.78; margin-bottom:2rem; }
+
+    /* SPECS */
+    .product-specs { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:2rem; }
+    .spec-item { background:var(--dark3); border:1px solid rgba(38,128,216,0.08); padding:0.8rem 1rem; }
+    .spec-label { font-family:'Barlow Condensed',sans-serif; font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--blue-bright); margin-bottom:0.2rem; }
+    .spec-value { font-size:0.85rem; color:var(--white); font-weight:500; }
+
+    /* ADD TO CART */
+    .add-to-cart-wrap { display:flex; flex-direction:column; gap:1rem; }
+    .qty-row { display:flex; align-items:center; gap:1rem; }
+    .qty-label { font-family:'Barlow Condensed',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
+    .qty-control { display:flex; align-items:center; background:var(--dark3); border:1px solid rgba(38,128,216,0.2); }
+    .qty-btn { width:38px; height:38px; background:none; border:none; color:var(--text); font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:color 0.2s; }
+    .qty-btn:hover { color:var(--blue-bright); }
+    .qty-input { width:50px; height:38px; background:none; border:none; border-left:1px solid rgba(38,128,216,0.15); border-right:1px solid rgba(38,128,216,0.15); color:var(--white); text-align:center; font-family:'Barlow',sans-serif; font-size:0.95rem; outline:none; }
+    .qty-input::-webkit-inner-spin-button, .qty-input::-webkit-outer-spin-button { -webkit-appearance:none; }
+
+    .btn-add-cart { font-family:'Barlow Condensed',sans-serif; font-size:0.95rem; letter-spacing:0.18em; text-transform:uppercase; font-weight:700; background:linear-gradient(135deg,var(--blue),var(--blue-bright)); color:#fff; padding:1rem 2.5rem; border:none; cursor:pointer; clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); box-shadow:0 4px 24px rgba(38,128,216,0.35); transition:filter 0.2s, transform 0.2s; width:100%; font-size:0.95rem; }
+    .btn-add-cart:hover { filter:brightness(1.15); }
+    .btn-add-cart.added { background:linear-gradient(135deg,#1a9a3a,#22c44a); box-shadow:0 4px 24px rgba(26,154,58,0.3); }
+
+    /* GoDaddy Buy Now section */
+    .godaddy-section { margin-top:1rem; padding:1.2rem; background:rgba(38,128,216,0.04); border:1px solid rgba(38,128,216,0.12); }
+    .godaddy-label { font-family:'Barlow Condensed',sans-serif; font-size:0.65rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); margin-bottom:0.8rem; display:flex; align-items:center; gap:0.5rem; }
+    .godaddy-label::before { content:'🛒'; font-size:0.85rem; }
+    .btn-godaddy { display:block; width:100%; font-family:'Barlow Condensed',sans-serif; font-size:0.85rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:700; background:var(--dark3); color:var(--text); padding:0.85rem 1.5rem; border:1px solid rgba(38,128,216,0.25); text-align:center; text-decoration:none; transition:border-color 0.2s, color 0.2s; cursor:pointer; }
+    .btn-godaddy:hover { border-color:var(--blue-bright); color:var(--blue-bright); }
+
+    .product-actions-row { display:flex; gap:0.8rem; margin-top:0.8rem; }
+    .btn-enquire { flex:1; font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:600; color:var(--text); padding:0.75rem 1rem; text-decoration:none; border:1px solid rgba(255,255,255,0.1); text-align:center; transition:border-color 0.2s, color 0.2s; }
+    .btn-enquire:hover { border-color:var(--blue-bright); color:var(--blue-bright); }
+    .btn-view-atomic { flex:1; font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:600; color:var(--muted); padding:0.75rem 1rem; text-decoration:none; border:1px solid rgba(255,255,255,0.06); text-align:center; transition:color 0.2s; display:flex; align-items:center; justify-content:center; gap:0.4rem; }
+    .btn-view-atomic:hover { color:var(--blue-bright); }
+    .btn-view-atomic svg { width:11px; height:11px; fill:none; stroke:currentColor; stroke-width:2; }
+
+    /* RELATED */
+    .related-section { padding:60px 5vw 100px; border-top:1px solid rgba(38,128,216,0.1); }
+    .related-heading { font-family:'Bebas Neue',sans-serif; font-size:2rem; background:linear-gradient(135deg,#fff,var(--chrome)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:2rem; }
+    .related-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; }
+    .related-card { background:var(--dark2); border:1px solid rgba(38,128,216,0.08); text-decoration:none; display:flex; flex-direction:column; transition:border-color 0.3s, transform 0.3s; }
+    .related-card:hover { border-color:rgba(38,128,216,0.3); transform:translateY(-3px); }
+    .related-img { width:100%; aspect-ratio:1; object-fit:cover; background:var(--dark3); }
+    .related-body { padding:1rem; flex:1; display:flex; flex-direction:column; }
+    .related-name { font-family:'Barlow Condensed',sans-serif; font-size:0.9rem; font-weight:700; color:var(--white); margin-bottom:0.4rem; line-height:1.3; flex:1; }
+    .related-price { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; background:linear-gradient(135deg,var(--blue),var(--blue-bright)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .related-add { margin-top:0.8rem; font-family:'Barlow Condensed',sans-serif; font-size:0.68rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:700; background:rgba(38,128,216,0.15); color:var(--blue-bright); border:1px solid rgba(38,128,216,0.25); padding:0.45rem 0; text-align:center; cursor:pointer; border:none; width:100%; transition:background 0.2s; }
+    .related-add:hover { background:rgba(38,128,216,0.3); }
+
+    /* FOOTER */
+    footer { background:#070709; padding:3rem 5vw; border-top:1px solid rgba(38,128,216,0.08); }
+    .footer-inner { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.5rem; }
+    .footer-logo { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:0.1em; color:var(--white); }
+    .footer-logo span { color:var(--blue-bright); }
+    .footer-copy { font-size:0.76rem; color:rgba(255,255,255,0.18); }
+    .footer-fb { display:flex; align-items:center; gap:0.6rem; font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+    .footer-fb:hover { color:var(--blue-bright); }
+    .footer-fb svg { width:18px; height:18px; fill:currentColor; }
+
+    /* TOAST */
+    .toast { position:fixed; bottom:2rem; right:2rem; background:linear-gradient(135deg,var(--blue),var(--blue-bright)); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:0.85rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.85rem 1.5rem; z-index:9000; transform:translateY(100px); opacity:0; transition:transform 0.35s, opacity 0.35s; display:flex; align-items:center; gap:0.6rem; clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%); }
+    .toast.show { transform:none; opacity:1; }
+
+    @media (max-width:900px) {
+      .product-wrap { grid-template-columns:1fr; gap:2.5rem; }
+      .product-gallery { position:static; }
+      .related-grid { grid-template-columns:1fr 1fr; }
+      .nav-links { display:none; }
+      .hamburger { display:flex; }
+    }
+    @media (max-width:540px) {
+      .product-specs { grid-template-columns:1fr; }
+      .related-grid { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Luke Davis <span>Mechanical</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#barra">Barra Specialist</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="ldm-parts.html">Parts</a></li>
+    <li><a href="index.html#why">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="cart.html" class="cart-nav-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      Cart
+      <span class="cart-badge">0</span>
+    </a>
+    <a href="index.html#contact" class="nav-cta">Book a Job</a>
+  </div>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="breadcrumb">
+  <a href="index.html">Home</a>
+  <span class="sep">/</span>
+  <a href="ldm-parts.html">Parts</a>
+  <span class="sep">/</span>
+  <span class="current" id="breadcrumb-name">Loading...</span>
+</div>
+
+<div class="product-wrap" id="product-wrap">
+  <!-- Populated by JS -->
+</div>
+
+<div class="related-section" id="related-section" style="display:none;">
+  <h2 class="related-heading">Related Products</h2>
+  <div class="related-grid" id="related-grid"></div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Luke Davis <span>Mechanical</span></div>
+    <p class="footer-copy">© 2025 Luke Davis Mechanical. Prices in AUD inc GST.</p>
+    <a href="https://www.facebook.com/share/1aA59Uv2ku/" target="_blank" class="footer-fb">
+      <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      Facebook
+    </a>
+  </div>
+</footer>
+
+<div class="toast" id="toast">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Added to cart</span>
+</div>
+
+<script>
+// ── INIT ──────────────────────────────────────────────────────────────────
+const params = new URLSearchParams(location.search);
+const productId = params.get('id');
+const product = productId ? getProduct(productId) : null;
+
+Cart.updateBadge();
+
+if (!product) {
+  document.getElementById('product-wrap').innerHTML = `
+    <div style="padding:4rem;text-align:center;color:var(--muted);grid-column:1/-1">
+      <div style="font-size:3rem;margin-bottom:1rem">🔍</div>
+      <p>Product not found. <a href="ldm-parts.html" style="color:var(--blue-bright)">Back to parts</a></p>
+    </div>`;
+} else {
+  renderProduct(product);
+  renderRelated(product);
+  document.title = `${product.name} — Luke Davis Mechanical`;
+  document.getElementById('page-title').textContent = `${product.name} — Luke Davis Mechanical`;
+  document.getElementById('breadcrumb-name').textContent = product.name;
+}
+
+function fmt(n) { return '$' + Number(n).toLocaleString('en-AU'); }
+
+function renderProduct(p) {
+  const hasGodaddy = p.godaddyProductUrl && p.godaddyProductUrl.length > 0;
+
+  const specsMap = {
+    engines: [['Platform','Ford Barra DOHC 4.0L'],['Application','Street / Strip / Track'],['Warranty','Atomic Performance Warranty'],['Origin','Engineered in Sydney, AUS']],
+    rebuild: [['Platform','Ford Barra DOHC 4.0L'],['Compatibility','BA / BF / FG / FGX'],['HP Capable','See product details'],['Origin','Engineered in Sydney, AUS']],
+    block: [['Platform','Ford Barra DOHC 4.0L'],['Material','See product details'],['Compatibility','BA / BF / FG / FGX'],['Origin','Engineered in Sydney, AUS']],
+    pistons: [['Platform','Ford Barra DOHC 4.0L'],['Sold As','Set of 6'],['HP Rating','See product details'],['Origin','Engineered in Sydney, AUS']],
+    head: [['Platform','Ford Barra DOHC 4.0L'],['Compatibility','BA / BF / FG / FGX'],['Set Size','Set of 24 unless noted'],['Origin','Engineered in Sydney, AUS']],
+    timing: [['Platform','Ford Barra DOHC 4.0L'],['Compatibility','All Barra variants'],['HP Range','200HP–2000HP+'],['Origin','Engineered in Sydney, AUS']],
+    oil: [['Platform','Ford Barra DOHC 4.0L'],['Application','Street / Race'],['Pressure','See product details'],['Origin','Engineered in Sydney, AUS']],
+    gaskets: [['Platform','Ford Barra DOHC'],['Compatibility','BA / BF / FG / FGX'],['Material','See product details'],['Origin','Engineered in Sydney, AUS']],
+    studs: [['Platform','Ford Barra DOHC'],['Material','See product details'],['Grade','High-tensile'],['Origin','Engineered in Sydney, AUS']],
+    accessories: [['Platform','Ford Barra DOHC'],['Fitment','See product details'],['Material','CNC Billet Alloy / Steel'],['Origin','Engineered in Sydney, AUS']],
+  };
+  const specs = specsMap[p.cat] || specsMap.accessories;
+
+  const specsHTML = specs.map(([l,v]) => `
+    <div class="spec-item">
+      <div class="spec-label">${l}</div>
+      <div class="spec-value">${v}</div>
+    </div>`).join('');
+
+  const badgeHTML = p.badgeClass ? `<div class="product-badge ${p.badgeClass}">${p.badgeText}</div>` : '';
+
+  const imgHTML = p.img
+    ? `<img class="product-main-img" src="${p.img}" alt="${p.name}" onerror="this.style.display='none';document.getElementById('img-fallback').style.display='flex'"/>
+       <div class="product-img-placeholder" id="img-fallback" style="display:none">${p.icon}</div>`
+    : `<div class="product-img-placeholder">${p.icon}</div>`;
+
+  const godaddySection = hasGodaddy
+    ? `<div class="godaddy-section">
+         <div class="godaddy-label">Direct checkout via GoDaddy Store</div>
+         <a href="${p.godaddyProductUrl}" target="_blank" class="btn-godaddy">🛒 Buy Now via GoDaddy Store</a>
+       </div>`
+    : `<div class="godaddy-section" style="opacity:0.5">
+         <div class="godaddy-label">GoDaddy Store coming soon</div>
+         <div class="btn-godaddy" style="cursor:default;color:var(--muted)">Direct checkout — available shortly</div>
+       </div>`;
+
+  document.getElementById('product-wrap').innerHTML = `
+    <div class="product-gallery">
+      ${imgHTML}
+      ${badgeHTML}
+      <div class="atomic-source">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Source: <a href="${p.atomicUrl}" target="_blank">Atomic Performance Products</a> — Barra Specialists Since 2004
+      </div>
+    </div>
+
+    <div class="product-info">
+      <div class="product-cat-tag">${p.catLabel}</div>
+      <h1 class="product-title">${p.name}</h1>
+
+      <div class="product-price-wrap">
+        ${p.fromPrice ? '<span class="product-price-from">From</span>' : ''}
+        <div class="product-price-val">${fmt(p.price)}</div>
+        <span class="product-price-aud">AUD inc GST</span>
+      </div>
+
+      <p class="product-desc-full">${p.desc}</p>
+
+      <div class="product-specs">${specsHTML}</div>
+
+      <div class="add-to-cart-wrap">
+        <div class="qty-row">
+          <span class="qty-label">Qty</span>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="adjustQty(-1)">−</button>
+            <input type="number" class="qty-input" id="qty-input" value="1" min="1" max="99"/>
+            <button class="qty-btn" onclick="adjustQty(1)">+</button>
+          </div>
+        </div>
+        <button class="btn-add-cart" id="add-cart-btn" onclick="addToCart('${p.id}')">
+          + Add to Cart
+        </button>
+        ${godaddySection}
+        <div class="product-actions-row">
+          <a href="index.html#contact" class="btn-enquire">📞 Enquire About This Part</a>
+          <a href="${p.atomicUrl}" target="_blank" class="btn-view-atomic">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Full Specs on Atomic
+          </a>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderRelated(p) {
+  const related = LDM_PRODUCTS.filter(x => x.cat === p.cat && x.id !== p.id).slice(0, 4);
+  if (related.length === 0) return;
+  document.getElementById('related-section').style.display = '';
+  document.getElementById('related-grid').innerHTML = related.map(r => `
+    <a href="product.html?id=${r.id}" class="related-card">
+      <img class="related-img" src="${r.img}" alt="${r.name}" onerror="this.src='';this.style.background='var(--dark3)'"/>
+      <div class="related-body">
+        <div class="related-name">${r.name}</div>
+        <div class="related-price">${r.fromPrice ? 'From ' : ''}${fmt(r.price)}</div>
+        <button class="related-add" onclick="event.preventDefault();quickAdd('${r.id}',this)">+ Add to Cart</button>
+      </div>
+    </a>`).join('');
+}
+
+function adjustQty(delta) {
+  const input = document.getElementById('qty-input');
+  const val = Math.max(1, Math.min(99, (parseInt(input.value) || 1) + delta));
+  input.value = val;
+}
+
+function addToCart(id) {
+  const qty = parseInt(document.getElementById('qty-input').value) || 1;
+  Cart.add(id, qty);
+  const btn = document.getElementById('add-cart-btn');
+  btn.textContent = '✓ Added to Cart';
+  btn.classList.add('added');
+  showToast(`Added ${qty}× to cart`);
+  setTimeout(() => { btn.textContent = '+ Add to Cart'; btn.classList.remove('added'); }, 2500);
+}
+
+function quickAdd(id, btn) {
+  Cart.add(id, 1);
+  btn.textContent = '✓ Added';
+  btn.style.background = 'rgba(26,154,58,0.3)';
+  showToast('Added to cart');
+  setTimeout(() => { btn.textContent = '+ Add to Cart'; btn.style.background = ''; }, 2000);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
