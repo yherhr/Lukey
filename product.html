@@ -219,20 +219,38 @@ if (!product) {
 
 function fmt(n) { return '$' + Number(n).toLocaleString('en-AU'); }
 
+
+function getSupplierName(p) {
+  const url = p.atomicUrl || '';
+  if (url.includes('atomicperformanceproducts')) return 'Atomic Performance Products';
+  if (url.includes('pulsarturbo')) return 'Pulsar Turbos Australia';
+  if (url.includes('spoolimports') && url.includes('ross')) return 'Spool Imports — Ross Performance';
+  if (url.includes('spoolimports')) return 'Spool Imports';
+  if (url.includes('aeroflowperformance')) return 'Aeroflow Performance';
+  if (url.includes('vpw.com.au') || url.includes('rts.com.au')) return 'VPW / RTS Performance';
+  if (url.includes('haltech')) return 'Haltech — ECU Specialists';
+  if (url.includes('xr6turbodevelopments')) return 'XR6 Turbo Developments';
+  return 'Performance Supplier';
+}
+
 function renderProduct(p) {
   const hasGodaddy = p.godaddyProductUrl && p.godaddyProductUrl.length > 0;
 
+  const supplier = getSupplierName(p);
   const specsMap = {
-    engines: [['Platform','Ford Barra DOHC 4.0L'],['Application','Street / Strip / Track'],['Warranty','Atomic Performance Warranty'],['Origin','Engineered in Sydney, AUS']],
-    rebuild: [['Platform','Ford Barra DOHC 4.0L'],['Compatibility','BA / BF / FG / FGX'],['HP Capable','See product details'],['Origin','Engineered in Sydney, AUS']],
-    block: [['Platform','Ford Barra DOHC 4.0L'],['Material','See product details'],['Compatibility','BA / BF / FG / FGX'],['Origin','Engineered in Sydney, AUS']],
-    pistons: [['Platform','Ford Barra DOHC 4.0L'],['Sold As','Set of 6'],['HP Rating','See product details'],['Origin','Engineered in Sydney, AUS']],
-    head: [['Platform','Ford Barra DOHC 4.0L'],['Compatibility','BA / BF / FG / FGX'],['Set Size','Set of 24 unless noted'],['Origin','Engineered in Sydney, AUS']],
-    timing: [['Platform','Ford Barra DOHC 4.0L'],['Compatibility','All Barra variants'],['HP Range','200HP–2000HP+'],['Origin','Engineered in Sydney, AUS']],
-    oil: [['Platform','Ford Barra DOHC 4.0L'],['Application','Street / Race'],['Pressure','See product details'],['Origin','Engineered in Sydney, AUS']],
-    gaskets: [['Platform','Ford Barra DOHC'],['Compatibility','BA / BF / FG / FGX'],['Material','See product details'],['Origin','Engineered in Sydney, AUS']],
-    studs: [['Platform','Ford Barra DOHC'],['Material','See product details'],['Grade','High-tensile'],['Origin','Engineered in Sydney, AUS']],
-    accessories: [['Platform','Ford Barra DOHC'],['Fitment','See product details'],['Material','CNC Billet Alloy / Steel'],['Origin','Engineered in Sydney, AUS']],
+    engines: [['Platform','Ford Barra DOHC 4.0L'],['Application','Street / Strip / Track'],['Warranty','Manufacturer Warranty'],['Supplier',supplier]],
+    rebuild: [['Platform','Ford Barra DOHC 4.0L'],['Compatibility','BA / BF / FG / FGX'],['HP Capable','See product details'],['Supplier',supplier]],
+    block: [['Platform','Ford Barra DOHC 4.0L'],['Material','See product details'],['Compatibility','BA / BF / FG / FGX'],['Supplier',supplier]],
+    pistons: [['Platform','Ford Barra DOHC 4.0L'],['Sold As','Set of 6'],['HP Rating','See product details'],['Supplier',supplier]],
+    head: [['Platform','Ford Barra DOHC 4.0L'],['Compatibility','BA / BF / FG / FGX'],['Set Size','Set of 24 unless noted'],['Supplier',supplier]],
+    timing: [['Platform','Ford Barra DOHC 4.0L'],['Compatibility','All Barra variants'],['HP Range','200HP–2000HP+'],['Supplier',supplier]],
+    oil: [['Platform','Ford Barra DOHC 4.0L'],['Application','Street / Race'],['Pressure','See product details'],['Supplier',supplier]],
+    gaskets: [['Platform','Ford Barra DOHC'],['Compatibility','BA / BF / FG / FGX'],['Material','See product details'],['Supplier',supplier]],
+    studs: [['Platform','Ford Barra DOHC'],['Material','See product details'],['Grade','High-tensile'],['Supplier',supplier]],
+    accessories: [['Platform','Ford Barra DOHC'],['Fitment','See product details'],['Material','CNC Billet Alloy / Steel'],['Supplier',supplier]],
+    turbo: [['Platform','Universal / Ford Barra'],['HP Rating','See product details'],['Bearing Type','Dual Ceramic Ball Bearing'],['Supplier',supplier]],
+    fuel: [['Platform','Ford Barra DOHC'],['Compatibility','BA / BF / FG / FGX'],['Material','Billet Aluminium, Anodised'],['Supplier',supplier]],
+    ecu: [['Vehicle','Ford Falcon BA / BF / FG / FGX'],['Engine','4.0L DOHC Barra i6'],['Transmission','Manual & ZF 6HP26 Auto'],['Supplier',supplier]],
   };
   const specs = specsMap[p.cat] || specsMap.accessories;
 
@@ -265,7 +283,7 @@ function renderProduct(p) {
       ${badgeHTML}
       <div class="atomic-source">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        Source: <a href="${p.atomicUrl}" target="_blank">Atomic Performance Products</a> — Barra Specialists Since 2004
+        Source: <a href="${p.atomicUrl}" target="_blank">${getSupplierName(p)}</a> — Quality Barra Performance Parts
       </div>
     </div>
 
@@ -300,7 +318,7 @@ function renderProduct(p) {
           <a href="index.html#contact" class="btn-enquire">📞 Enquire About This Part</a>
           <a href="${p.atomicUrl}" target="_blank" class="btn-view-atomic">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            Full Specs on Atomic
+            Full Specs on ${getSupplierName(p).split(' ')[0]}
           </a>
         </div>
       </div>
